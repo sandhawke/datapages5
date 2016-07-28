@@ -1,0 +1,23 @@
+'use strict'
+
+const test = require('tape')
+const dp = require('..')
+const file = require('file')
+const del = require('del')
+
+test('filestore: create, add, re-create, then replay-watch', t => {
+  t.plan(1)
+  const dir = __dirname + '/temp'
+  console.log('deleted', del.sync(dir, {dryRun: false}))
+  file.mkdirsSync(dir)
+  const db1 = dp.filestore(dir)
+  const source = {alice: 10}
+  db1.create(source, (page) => {
+    source.id = page.id // so deepEqual matches on the id part
+    const db2 = dp.filestore(dir)
+    db2.watch(true, (err,event) => {
+      t.deepEqual(event.created, [source])
+    })
+  })
+})
+

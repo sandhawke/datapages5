@@ -1,0 +1,22 @@
+{
+  "name": "datapages",
+  "version": "0.0.1",
+  "description": "An experimental json document database",
+  "main": "index.js",
+  "scripts": {
+    "test": "faucet"
+  },
+  "author": "Sandro Hawke <sandro@hawke.org>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "debug": "^2.2.0",
+    "del": "^2.2.1",
+    "eventemitter3": "^1.2.0",
+    "file": "^0.2.2",
+    "mkdirp": "^0.5.1"
+  },
+  "devDependencies": {
+    "faucet": "0.0.1",
+    "tape": "^4.6.0"
+  }
+}
