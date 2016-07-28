@@ -45,9 +45,26 @@ db.create(bob)
 // => new page { bob:  'Bob', age: 29 }
 db.filter({ age: { $lt: 30 }})
   .on('appear', page => {
-   console.log(name, 'is under 30')
+     console.log(name, 'is under 30')
    // => Bob is under 30
 })
+db.update(alice, { age: 27 })
+// => Alice is under 30
+db.filter({ age: { '>': 28 }})
+  .on('results', results => {
+     console.log('People under 28:',
+                 results.map(x => x.name).join(', '))
+  })
+// => People under 28: Alice
+db.update(alice, { age: 30})
+// => People under 28:
+db.update(bob, { age: 25})
+// => Bob is under 30
+// => People under 28: Bob
+db.update(alice, { age: 25})
+// => Alice is under 30
+// => People under 28: Bob, Alice
+
 ```
 
 For all the details see the
