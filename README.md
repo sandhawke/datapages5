@@ -7,13 +7,14 @@ Features (some not yet implemented):
 
 * Very fast for small datasets (thousands of records)
 * Data records are JSON-compatible JavaScript objects
-* Objects can refer to each other naturally (like `alice.mother.mother.age`, cycles are okay)
-* Instances can be linked into a federation (eg between web client and web server), with efficient propagation
+* Objects can refer to each other naturally (like `alice.mother.child.age`)
+* Objects retain their js identity; cycles are allowed (`if (alice.mother.clild[2]===alice) ...`)
 * Easy to build live displays of dynamically-changing query results (no
 polling)
+* Instances can be linked into a federation (eg between web client and web server), with efficient propagation
 * Supports transient records, aka event streaming
 * Supports streaming attached media blobs, eg JPEGs
-* Works with https://github.com/sandhawke/vocabspec[vocabspec] to handle
+* Works with [vocabspec](https://github.com/sandhawke/vocabspec) to handle
 schema validation, migration (with views), and integration
 * Supports temporal and provenance features (only show data resulting from sources users a and b before time t)
 * Supports access control for use in multiuser backends
