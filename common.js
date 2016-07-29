@@ -49,6 +49,8 @@ function createRecursively(item, create, alreadyCreated, error) {
 */
 class Base extends EventEmitter {
 
+  /* MAYBE we want a .has */
+  
   count () {
     let n = 0
     this.forEach( () => ++n )

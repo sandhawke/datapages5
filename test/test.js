@@ -17,8 +17,8 @@ const datapages = require('..')
 test.dbFactories = [ datapages.inmem,
                      function inmemWithA1Filter () {
                        return datapages.inmem().filter({a:1})
-                     }
-                     
+                     },
+                     datapages.memlogbased
                    ]
 
 test.logger = function (t) {

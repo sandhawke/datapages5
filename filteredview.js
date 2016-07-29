@@ -6,13 +6,13 @@
   cache around this one.
 */
 
-const EventEmitter = require('eventemitter3')
+const common = require('./common')
 const jsfilter = require('jsfilter').JsonFilter  // rewrite this?
 const debug = require('debug')('filtview')
 
 
 function filteredview (db, expr) {
-  const  v = new EventEmitter()
+  const  v = new common.Base()
   let started = false
   let filterFunc = filter.func
   const fixedValues = {}
@@ -91,12 +91,6 @@ function filteredview (db, expr) {
   function forEach (f) {
     db.forEach(x => { if (filterFunc(x)) f(x) }) 
   }
-  
-  function count () {
-    let n = 0
-    forEach(() => { n++ })
-    return n
-  }
 
   function sendResults () {
     if (v.listeners('results', true)) {
@@ -140,14 +134,17 @@ function filteredview (db, expr) {
   }
   
   process.nextTick(start)  // this allows you to write filter().on(...)
+
+  // overrides
   v.create = create
-  v.update = db.update   // it's okay to make it non-passing!
-  v.delete = db.delete
   v.forEach = forEach
-  v.count = count
   v.filter = filter
   v.start = start
   v.stop = stop
+
+  // passthru
+  v.update = db.update   // it's okay to make it non-passing!
+  v.delete = db.delete
   return v
 }
 

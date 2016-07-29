@@ -336,8 +336,12 @@ Wraps an append-only db, where every page is "delta" (aka update, aka transactio
 === [IDEA] Appendfile: on disk store, only handles deltas
 
 === [IDEA] Rulebase: computes virtual properties, virtual pages, and checks validity
-** with accessControled allowes sophisticated rules
+** with accessControled allows sophisticated rules
 ** probably needs a way to run safe JS functions
+
+start with backchainsubproperty and forwardchainsubproperty
+then bcdatalog and fcdatalog
+then bcHorn, probably
 
 === [IDEA] EqualityReasoner
 
@@ -396,3 +400,11 @@ Set the "reference mode" for given property to be given type, which is one of: p
 
 Needs to be known for every property....    Do we default to 'subject' unless you say 'page'
 
+=== [IDEA] vocabularyMapped view
+
+basically run vocabspec convert on all data going in or out
+
+easy to test inmem
+
+might be used by rule engine to recognize its own vocabulary without
+conflicting with anyone elses.   
