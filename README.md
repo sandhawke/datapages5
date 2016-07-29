@@ -37,7 +37,7 @@ db.on('appear', page => {
 })
 
 const alice = { name: 'Alice', age: 30 }
-const bob =   { bob:  'Bob', age: 29 }
+const bob =   { name:  'Bob', age: 29 }
 
 db.create(alice)
 // => new page { name: 'Alice', age: 30 }
