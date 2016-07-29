@@ -1,19 +1,5 @@
 'use strict'
 
-/*
-
-  What is stable/progress/results when someone is doing
-  create/update/delete?   
-
-  make on('appear disappear update-after') emit change
-
-  update-before-overlay
-  update-before-after
-  update-after
-
-
- */
-
 const common = require('./common')
 const filteredview = require('./filteredview')
 const debug = require('debug')('inmem')
@@ -41,18 +27,19 @@ function inmem () {
       // pages referring to pages that haven't been created yet
       for (let page of created) {
         db.emit('appear', page)
+        db.emit('change')
       }
       db.emit('stable')
-      db.emit('changed')
     }
+    return obj
   }
 
   function update (obj, overlay) {
     if (!pages.has(obj)) return db.error('db.update on not-created object')
-    db.emit('updating', obj, overlay)
+    db.emit('update-before', obj, overlay)
     let before = null
     debug('do we have full-update listeners?')
-    if (db.listeners('full-update', true)) {
+    if (db.listeners('update-full', true)) {
       debug('yes')
       before = Object.assign({}, obj)
     }
@@ -64,6 +51,7 @@ function inmem () {
       // that would be changing obj yourself, which is strictly forbidden
       if (old !== value) { 
         changed = true
+        db.emit('update-property', p, old, value, obj)
         if (value === null) {
           delete obj[p]
         } else {
@@ -73,16 +61,17 @@ function inmem () {
       }
     }
     if (changed) {
-      if (before) db.emit('full-update', before, obj)
-      db.emit('updated', obj)
-      db.emit('stable')
+      if (before) db.emit('update-full', before, obj)
+      db.emit('update-after', obj, overlay)
       db.emit('change')
+      db.emit('stable')
     }
   }
 
   function delete_ (obj) {
     if (!pages.delete(obj)) return db.error('failure in db.delete')
     db.emit('disappear', obj)
+    db.emit('change')
   }
 
   function count () {
@@ -101,6 +90,7 @@ function inmem () {
   function start () {
     if (db.listeners('appear', true)) {
       forEach(page => { db.emit('appear', page) })
+      db.emit('change')
     }
   }
 
