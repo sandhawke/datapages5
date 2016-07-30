@@ -2,37 +2,33 @@
 
 const test = require('./test')
 
-
-test.eachClass('on-results', t => {
+test.eachClass('on-xappear', t => {
   const db = new t.Class()
-  
-  t.plan(10)
   const output = t.log
+  t.plan(10)
   
-
   const alice = { name: 'Alice' }
   const bob = { name: 'Bob' }
 
   db.create(alice)
   db.create(alice)
 
-  db.on('results', all => {
-    output('db has:', all.map(x => x.name).join(', '))
-  })
+  db.on('appear', page =>    { output(page.name, 'appears') })
+    .on('disappear', page => { output(page.name, 'disappears') })
 
-  output.was('db has: Alice')
+  output.was('Alice appears')
   db.create(alice)
   output.was()
   db.delete(alice)
-  output.was('db has: ')
+  output.was('Alice disappears')
   db.create(alice)
-  output.was('db has: Alice')
+  output.was('Alice appears')
   db.create(bob)
-  output.was('db has: Alice, Bob')
+  output.was('Bob appears')
   db.create(alice)
   output.was()
   db.delete(bob)
-  output.was('db has: Alice')
+  output.was('Bob disappears')
   try {
     db.delete(bob)
   } catch (err) {
@@ -40,8 +36,7 @@ test.eachClass('on-results', t => {
   }
   output.was('delete failed')
   db.delete(alice)
-  output.was('db has: ')
+  output.was('Alice disappears')
   t.equal(db.count(), 0)
   
 })
-

@@ -1,5 +1,10 @@
 'use strict'
 
-module.exports.inmem = require('./inmem')
-module.exports.memlogbased = require('./memlogbased')
+
+module.exports.InMem = require('./InMem')
+//module.exports.inmem = (...a) => new InMem(...a)
+module.exports.AuthView = require('./AuthView')
+module.exports.MemLogBased = require('./MemLogBased')
+
+module.exports.multisource = require('./multisource')
 

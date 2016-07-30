@@ -63,7 +63,15 @@ supported.
 
 === db.filter(expr)   aka    db.query(expr)   aka db.where(expr)
 
-=== [PLANNED] db.count()
+=== db.count()
+
+=== db.lookup(itemref, property) or (itemref, filter-expr)
+
+a shortcut for a filter that selects that one item, and optionally
+produces that one property of the item, or the item only when it
+matches that filter.  Often followed by .once('results', ...) to see
+the value if/when it appears, or .on('results', ...) to also see when
+it changes.
 
 === [PLANNED] db.sort(prop-or-prop-array) => returned dbview with ordering
 
@@ -95,6 +103,10 @@ db.where({b: 'foo'}).select('a')
 
 NOT db.select('a').where({b: 'foo'}) because .where can't even see b,
 because it wasn't passed through by .select('a')
+
+call it db.produce ?
+
+Make it part of the filter options, not really part of db.
 
 === [IDEA] db.join(n)
 
@@ -195,36 +207,32 @@ object) containing a frozen copy of the current db.  Producing and/or
 maintaining that copy might be expensive, so us 'stable' unless you're
 actually going to use that parameter.
 
-=== Event: updating
+=== Event: update-*
 
-Properties of one of the pages in the db is about to change
+'update-before' (formerly 'updating') is called with (ref, overlay),
+where the overlay is relative to some previous state that the receiver
+might not have, and a reference object, such as one would pass as the
+first argument on update.  For some situations, like event is
+sufficient.  Might be called when the overlay actually changes no
+data, unlike the other update-* events.
 
-Passed (old value, overlay), *before* the overlay has been applied.
+'update-full' (forermly 'full-update') is called with (before, after,
+overlay).  This is somewhat more expensive to create, so if
+update-light is good enough, use that.
 
-Contrast with 'updated', this allows filtering based on what the old
-value was without having to remember it.
+'update-after' (formerly 'updated') is called with (ref, overlay),
+where the overlay has been applied
 
-=== Event: updated
+'update-property is called with (property, value-before, value-after,
+ref).  If you only care about one property, you can hook into this and
+quickly check if the property is the one you want.
 
-Passed (new value, overlay), without any way to tell what the old value was
+=== Event: change
 
-=== Event: changed
-
-Emitted whenever stable or updated?  Somethat that's useful
-arraydom.CleverDOMDriver, still to be exactly sorted.  Are those
-functions passed 'results'?  Probably.
-
-```js
-[myFunc, {css}, db.where(...).sort(...)]
-     myFunc(attrs, results)
-
-[dbbind(myFunc, db.where(...).sort(...))]
-
-
-
- [cyan.view(myFunc, db...), {css}]
- cyan.view(myFunc, db...)
-```
+The combination of 'appear', 'disappear', and 'update-after'.  That
+is, 'change' is emitted any time the view changes in anyway.
+Typically the listener for this is setting a 'dirty' bit to trigger a
+later expensive operation.
 
 === Event: error
 

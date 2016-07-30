@@ -73,5 +73,6 @@ or the
 [test suite](test)
 
 
-
-
+Maybe we can have an "implementation status" structure, by database
+type (or stacks) and feature.  It could be useful to look at and could
+drive the test suite.
