@@ -28,10 +28,13 @@ class InMem extends Base {
   }
 
   delete (obj) {
+    debug('XXXXXXXXXXXXXXX')
     if (!this._pages.delete(obj)) return this.error_notmine()
     this.emit('disappear', obj)
     this.emit('change')
+    debug('delete, calling weAreStable')
     this._weAreStable()
+    debug('delete, called weAreStable')
   }
 
   count () {

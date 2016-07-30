@@ -24,7 +24,7 @@ test.eachClass('on-results', t => {
   db.create(alice)
   output.was()
   db.delete(alice)
-  output.was('db has: ')
+  output.was('db has: ') 
   db.create(alice)
   output.was('db has: Alice')
   db.create(bob)

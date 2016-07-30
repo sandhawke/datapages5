@@ -20,11 +20,29 @@ class AuthViewOnInMem extends datapages.AuthView {
   }
 }
 
-class InMemFilterA1 {
+class InMemFilter1 {
   constructor () {
     const m = new datapages.InMem()
     m.create( { anotherItem: 'to be a challenge' } )
     const f = m.filter({ a: 1 })
+    return f
+  }
+}
+
+class InMemFilter2 {
+  constructor () {
+    const m = new datapages.InMem()
+    m.create( { anotherItem: 'to be a challenge' } )
+    const f = m.filter({ a: 1, b: { $ne: 2 }})
+    return f
+  }
+}
+
+class MemLogFilter {
+  constructor () {
+    const m = new datapages.InMem()
+    m.create( { anotherItem: 'to be a challenge' } )
+    const f = m.filter({ a: 1, b: { $ne: 2 }})
     return f
   }
 }
@@ -34,7 +52,9 @@ class InMemFilterA1 {
 const classEntries = [
   [ datapages.InMem, [] ],
   [ datapages.MemLogBased, [] ],
-  [ InMemFilterA1, ['big-count', 'on-xappear', 'on-results' ]],
+  [ InMemFilter1, ['big-count', 'big-filter' ]],
+  [ InMemFilter2, ['big-count', 'big-filter' ]],
+  [ MemLogFilter, ['big-count', 'big-filter' ]],
   [ AuthViewOnInMem, ['on-results', 'big-count'] ],
 ]
 

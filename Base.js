@@ -1,5 +1,9 @@
 'use strict'
 
+// DOWN BELOW BECAUSE OF require LOOP
+// I bet this will break browserify
+// const Filter = require('./Filter')
+
 const EventEmitter = require('events')
 const debug = require('debug')('Base')
 
@@ -114,7 +118,9 @@ class Base extends EventEmitter {
 
   _weAreStable () {
     this.emit('stable')
+    debug('_weAreStable, anyone want results?', this.listeners('results'), this)
     if (this.listeners('results').length > 0) {
+      debug('YES')
       this.emit('results', this.all())
     }
   }
