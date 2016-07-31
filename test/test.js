@@ -13,8 +13,27 @@
 const test = require('tape')
 const util = require('util')
 const datapages = require('..')
+const file = require('file')
+const del = require('del')
+const os = require('os')
+const path = require('path')
+
+function tmpdir (name = "1") {
+  const dir = __dirname + '/temp/' + name
+  // const dir = path.join(os.tmpdir(), 'datapages-test', name)
+  del.sync(dir, {dryRun: false})
+  file.mkdirsSync(dir)
+  return dir
+}
+test.tmpdir = tmpdir
 
 class AuthViewOnInMem extends datapages.AuthView {
+  constructor () {
+    super(new datapages.InMem())
+  }
+}
+
+class SigmaOnInMem extends datapages.Sigma {
   constructor () {
     super(new datapages.InMem())
   }
@@ -56,6 +75,8 @@ const classEntries = [
   [ InMemFilter2, ['big-count', 'big-filter' ]],
   [ MemLogFilter, ['big-count', 'big-filter' ]],
   [ AuthViewOnInMem, ['on-results', 'big-count'] ],
+  [ SigmaOnInMem, ['big-count', 'filter', 'big-filter', 'on-results', 'on-xappear'] ],
+  
 ]
 
 function * classes (testName) {
@@ -114,5 +135,6 @@ function logger (t) {
 
   return me
 }
+
 
 module.exports = test

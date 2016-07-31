@@ -21,6 +21,12 @@ class Base extends EventEmitter {
       if (event === 'results') {
         listener(this.all())
       }
+      if (event === 'stable') {
+        // if someone asks if we're stable, ... yeah, sure, honey
+        //
+        // (By the time they could be asking that, I'm pretty sure we are.)
+        listener()
+      }
     })
   }
 
@@ -118,7 +124,7 @@ class Base extends EventEmitter {
 
   _weAreStable () {
     this.emit('stable')
-    debug('_weAreStable, anyone want results?', this.listeners('results'), this)
+    // debug('_weAreStable, anyone want results?', this.listeners('results'), this)
     if (this.listeners('results').length > 0) {
       debug('YES')
       this.emit('results', this.all())

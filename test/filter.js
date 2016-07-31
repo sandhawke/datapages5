@@ -53,7 +53,7 @@ test.eachClass('big-filter', t => {
   // if we're doing a linear search, this is going to be way slower,
   // passing the 10k records above for each match.
   
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 3; i++) {
     let f = db.filter({ x: { $gt: 1 } })
     t.deepEqual(f.all(), [bob, cora])
   }

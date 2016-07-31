@@ -1,5 +1,20 @@
 'use strict'
 
+/*
+  TO DO:
+
+  - filtering of history
+
+  - returning of history
+
+  - figure out how to abstract the log so it can be across the network
+
+  - make a disk version
+
+  - support for media changes as well
+
+*/
+
 const Base = require('./Base')
 const Filter = require('./Filter')
 const debug = require('debug')('memlogbased')
@@ -107,6 +122,21 @@ class MemLogBased extends Base {
 }
 
 class MyFilter extends Filter {
+
+  /*constructor (parent, expr, options) {
+    super(parent, expr, options)
+    this._historyPasses = options.historyFilter || x => true
+  }
+  
+  forEach (f) {
+    // TODO: APPLY this._historyPasses to every transaction we use
+    this._parent.forEach(page => {
+      if (this._passes(page)) f(page)
+    })
+  }
+  
+  // ... other funcs
+*/
 }
 
 

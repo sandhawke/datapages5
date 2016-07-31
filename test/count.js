@@ -35,7 +35,7 @@ test.eachClass('big-count', t => {
   // listeners(event).length > 0, which meant we were preparing 'results'
   // parameters a lot more than we should have been.  Mad it slow.
   
-  for (let i = 0; i < 100000; i++) {
+  for (let i = 0; i < 10000; i++) {
     if (db.count() !== i) t.fail()   // don't make lots of tests
     const alice = { }
     db.create(alice)
