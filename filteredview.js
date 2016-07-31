@@ -12,7 +12,7 @@ const debug = require('debug')('filtview')
 
 
 function filteredview (db, expr) {
-  const  v = new common.Base()
+  const v = new common.Base()
   let started = false
   let filterFunc = filter.func
   const fixedValues = {}

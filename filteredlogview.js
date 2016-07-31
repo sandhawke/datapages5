@@ -23,8 +23,12 @@ function filteredlogview (db, expr, options) {
   const idprop = db._idprop
   const v = new common.Base()
   let started = false
-  let filterFunc = filter.func
+  let filterFunc
   const fixedValues = {}
+  if (!expr) {
+    // jsfilter doesn't have a null (always true) thing, I think
+    expr = { no_such_property: { $ne: 'no such value' } }
+  }
   if (!filterFunc) {
     const jsfObj = jsfilter.create(expr)
     filterFunc = x => jsfObj.match(x)
@@ -51,9 +55,10 @@ function filteredlogview (db, expr, options) {
     if (!metaFilter || metaFilter(trans)) {
       if (trans.created) {
         appearListener(trans.created)
-      }
-      if (trans.deleted) {
+      } else if (trans.deleted) {
         disappearListener(trans.deleted)
+      } else if (trans.overlay) {
+        overlayListener(trans.overlay[idprop], trans.overlay)
       }
     }
   }
@@ -70,6 +75,25 @@ function filteredlogview (db, expr, options) {
       v.emit('change')
     }
   }
+  function overlayListener (id, overlay) {
+    // for now, be brute-force and just figure out before & after and
+    // send them to pre-existing updatesListener
+    let before = {}
+    // stop one short, so we're not including this overlay
+    const history = log[id].history
+    for (let i = 0; i < history.length - 1; i++) {
+      const t = history[i]
+      if (!metaFilter || metaFilter(t)) {
+        if (t.created) before = t.created
+        else if (t.deleted) before = {}
+        else if (t.overlay) Object.assign(before, t.overlay)
+      }
+    }
+    const after = {}
+    Object.assign(after, before, overlay)
+    updatesListener(before, after)
+  }
+  
   // we really need before and after, even though this means copying
   function updatesListener (before, after) {
     const wasIn = filterFunc(before)
@@ -96,10 +120,14 @@ function filteredlogview (db, expr, options) {
 
   function forEach (f) {
     /*
-      This code will overlap what update does to construct full-data
+      This code will overlap what update does to construct full-data [
+      Later: Oh, actually I wrote update totally differently.
+      Consider changing this one. ]
 
       I feel like there's a smarter way to do this going BACKWARD
       through the log, but let's try it the more obvious way first.
+
+      
     */
     let states = [] // or use Map() ?   *shrug*
     
@@ -144,9 +172,10 @@ function filteredlogview (db, expr, options) {
   function start () {
     if (started) return
     started = true
-    db.on('appear', appearListener)
-    db.on('disappear', disappearListener)
+    // db.on('appear', appearListener)
+    // db.on('disappear', disappearListener)
     db.on('full-update', updatesListener)
+    db.on('change', changeListener)
     db.on('stable', () => { v.emit('stable') })
 
     if (v.listeners('appear', true)) {
