@@ -8,7 +8,9 @@ for (let factory of test.dbFactories) {
 
   // skip for now
   if (factory.name === 'inmemWithA1Filter') continue
+  //if (factory.name === 'memlogbased') continue
   
+
   test(factory.name + ' filtered, create/delete -> appear, disappear', t => {
     t.plan(9)
     const output = test.logger(t)
