@@ -145,10 +145,9 @@ class Sigma extends ObjectsForIDs {
     this._bioMap = bioMap
     const myCB = t => updateBiographies(bioMap, t, this._genid)
     debug('startLoading 9')
-    this._parent.on('add', myCB)
-    this._parent.on('appear', myCB)   // LEGACY
+    this._parent.onWithReplay('appear', myCB)
     debug('startLoading 10')
-    this._parent.once('stable', () => {
+    this._parent.onceWithReplay('stable', () => {
       debug('startLoading 20')
       // ACTUALLY keep these, this is how we keep the biomap updated
       // as we add data!
@@ -162,7 +161,7 @@ class Sigma extends ObjectsForIDs {
       this.loading = false
       debug('loading done')
     })
-    this._parent.on('stable', () => { this.emit('stable') })
+    this._parent.onWithReplay('stable', () => { this.emit('stable') })
     debug('startLoading 11')
   }
 
