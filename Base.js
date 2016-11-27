@@ -219,7 +219,7 @@ class Base extends EventEmitter {
     let changed = false
     for (let p of Reflect.ownKeys(overlay)) {
       let value = overlay[p]
-      let old = this.getProperty(obj, p)
+      let old = this._getProperty(obj, p)
       // This wont notice an array whose elements have changed, but doing
       // that would be changing obj yourself, which is strictly forbidden
       if (old !== value) {
