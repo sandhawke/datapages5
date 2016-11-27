@@ -11,8 +11,9 @@ test('basic Streamer', t => {
   const s = new Streamer(db)
   const s2 = new Streamer(db)
 
-  const watcher = {}
-  watcher.push = (arg) => {
+  // const watcher = {}
+  // watcher.push = (arg) => {
+  function watcher (arg) {
     output('saw', ...arg)
   }
   function dump (db) {
@@ -38,7 +39,7 @@ test('basic Streamer', t => {
   dump(db)
   output.was('db is', '- { a: 10 }')
 
-  s.push('set', -1024, 'a', 'raw', 20)
+  s.push(['set', -1024, 'a', 'raw', 20])
   dump(db)
   output.was('saw set -1024 a raw 20', 'db is', '- { a: 20 }')
 
@@ -48,7 +49,7 @@ test('basic Streamer', t => {
     [ 'set', -1024, 'a', 'raw', 20 ]
   ])
 
-  s.push('new', 2000)
+  s.push(['new', 2000])
   dump(db)
   output.was('saw new 2000', 'db is', '- { a: 20 }', '- {}')
 
@@ -59,7 +60,7 @@ test('basic Streamer', t => {
     [ 'new', -1025 ]
   ])
   
-  s.push('set', 2000, 'b', 'raw', 20)
+  s.push(['set', 2000, 'b', 'raw', 20])
   output.was('saw set 2000 b raw 20')
 
   dump(db)

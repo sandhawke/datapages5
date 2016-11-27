@@ -6,6 +6,8 @@
   for easy communication with a db across a narrow channel, like a
   postMessage interface or a websocket.  or for saving changes.
 
+  Could also be called DeltaView, Watcher, Logger, ... etc.
+
   * You invoke  it to make database changes.
   * You tell it streamTo(x) and it'll send all databases changes to x
     (including reflecting your changes back)
@@ -72,44 +74,70 @@ class Streamer {
     return objid
   }
 
-  streamTo (watcher) {
+  /* 
+     Set a destination for every event we see.  Either a function to
+     be called with each event, or an object (eg an Array) with a
+     .push method to be called with each event.
+
+     Second parameter, 'isAnotherStreamer', is boolean.  If truthy, it
+     means the sign of all object ids will be flipped, so that another
+     streamer can be used as the destination.  Normally streamers
+     assign negative ids and let the clients assign positive ids.
+     With this flag, we'll act like a client when talking to this
+     destination.
+
+  */
+
+  streamTo (watcher, isAnotherStreamer) {
+    // the watcher is either a function, or an object with a push() method
+    if (watcher.push === undefined && typeof watcher === 'function') {
+      watcher = { push: watcher }
+    }
+
+    function inv (x) {
+      debug('inv', x, isAnotherStreamer)
+      if (isAnotherStreamer) return (-1 * x)
+      return x
+    }
+    
     this._watcher = watcher
 
-    this._db.on('appear', obj => {
-      debug('appear triggered')
+    this._db.onWithReplay('appear', obj => {
+      debug('appear triggered', obj)
       const objid = this.objidFor(obj)
-      this._watcher.push(['new', objid])
+      this._watcher.push(['new', inv(objid)])
       for (let prop of Reflect.ownKeys(obj)) {
         const propid = prop // for now!   needs vocabspec stuff here
         const type = 'raw' // for now!   needs other stuff before we go binary
         // if the type is OBJECT, then .... do stuff.
-        this._watcher.push(['set', objid, propid, type, obj[prop]])
+        this._watcher.push(['set', inv(objid), propid, type, obj[prop]])
       }
     })
 
-    this._db.on('update-property', (p, old, value, obj) => {
-      debug('update property triggered')
+    this._db.on('update-property-after', (p, old, value, obj) => {
+      debug('update property triggered', p, old, value, obj)
       const objid = this.objidFor(obj)
-      this._watcher.push(['set', objid, p, 'raw', value])
+      this._watcher.push(['set', inv(objid), p, 'raw', value])
     })
 
     
     // disappear
-    // updated?
   }
 
-  push (...fullargs) {
-    const [cmd, ...args] = fullargs
+  push (event) {
+    debug('push', event)
+    const [cmd, ...args] = event
     if (cmd === 'new') {
       const objid = args[0]
-      if (objid < 0) throw Error('only I get to assign negative objids')
       let obj = this._objs.get(objid)
       if (obj === undefined) {
+        if (objid < 0) throw Error('only I get to assign negative objids')
         obj = {}
         this._ids.set(obj, objid)
         this._objs.set(objid, obj)
         this._db.create(obj)
       }
+      // duplicate 'new' events are ignored, for flooding
     } else if (cmd === 'set') {
       const [objid, propid, type, value] = args
       let obj = this._objs.get(objid)
@@ -118,7 +146,7 @@ class Streamer {
       overlay[propid] = value
       this._db.update(obj, overlay)
     } else {
-      throw Error('unknown cmd', cmd)
+      throw Error('unknown cmd: ' + cmd)
     }
   }
   
