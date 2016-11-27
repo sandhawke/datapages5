@@ -1,7 +1,6 @@
 'use strict'
 
 const Base = require('./Base')
-const filteredview = require('./filteredview')
 const debug = require('debug')('inmem')
 
 class InMem extends Base {

@@ -27,7 +27,7 @@ class AuthView extends Base {
       // console.log('RELAYING', event)
       if (may.see(obj)) self.emit(event, obj)
     }
-    parent.on('appear', obj => { relay('appear', obj) })
+    parent.onWithReplay('appear', obj => { relay('appear', obj) })
     parent.on('disappear', obj => { relay('disappear', obj) })
 
     // should pass on results, with 'all' trimmed

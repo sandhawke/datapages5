@@ -4,7 +4,8 @@
   "description": "An experimental json document database",
   "main": "index.js",
   "scripts": {
-    "test": "faucet"
+    "test": "faucet",
+    "build-doc": "asciidoctor interface-spec.adoc"
   },
   "author": "Sandro Hawke <sandro@hawke.org>",
   "license": "UNLICENSED",

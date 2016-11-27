@@ -117,11 +117,12 @@ class Filter extends Base {
     function resultsListener (...a) {
       self._resultsListener(...a)
     }
-    
-    self.on('newListener', (event, listener) => {
-      debug('newListener', event)
+
+    this.replay = (event, listener) => {
+      debug('replay', event)
+      super.replay(event, listener)
       if (event === 'appear') {
-        // super()'s newListener Listener will already have done self
+        // super() will already have done
         // for us self.forEach(page => { listener(page) })
         self._listen(parent, 'appear', appearListener)
         if (!addedUpdateListener) {
@@ -145,9 +146,9 @@ class Filter extends Base {
         // listener(self.all())
         self._listen(parent, 'results', resultsListener)
       }
-    })
+    }
   }
-
+  
   _stableListener () {
     this.emit('stable')
   }

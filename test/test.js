@@ -75,7 +75,7 @@ const classEntries = [
   [ InMemFilter2, ['big-count', 'big-filter' ]],
   [ MemLogFilter, ['big-count', 'big-filter' ]],
   [ AuthViewOnInMem, ['on-results', 'big-count'] ],
-  [ SigmaOnInMem, ['big-count', 'filter', 'big-filter', 'on-results', 'on-xappear'] ],
+  [ SigmaOnInMem, ['big-count', 'filter', 'big-filter', 'on-results', 'on-xappear'] ]
   
 ]
 

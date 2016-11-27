@@ -4,7 +4,7 @@
 // I bet this will break browserify
 // const Filter = require('./Filter')
 
-const EventEmitter = require('events')
+const EventEmitter = require('eventemitter3')
 const debug = require('debug')('Base')
 
 class Base extends EventEmitter {
@@ -12,6 +12,7 @@ class Base extends EventEmitter {
   constructor () {
     super() // without this, "this is not defined" !
 
+    /*
     // alas, EventEmitter3 decided against newListeners support.  :-(
     this.on('newListener', (event, listener) => {
       debug('newListener', event)
@@ -28,8 +29,35 @@ class Base extends EventEmitter {
         listener()
       }
     })
+    */
   }
 
+  onceWithReplay (event, listener) {
+    this.replay(event, listener)
+    this.once(event, listener)
+    return this
+  }
+  onWithReplay (event, listener) {
+    this.replay(event, listener)
+    this.on(event, listener)
+    return this
+  }
+  replay (event, listener) {
+    if (event === 'appear') {
+      this.forEach(page => { listener(page) })
+    }
+    if (event === 'results') {
+      listener(this.all())
+    }
+    if (event === 'stable') {
+      // if someone asks if we're stable, ... yeah, sure, honey
+      //
+      // (By the time they could be asking that, I'm pretty sure we are.)
+      listener()
+    }
+  }
+
+  
   mirror (buddy) {
     this._listen(buddy, 'appear', this.create)
     this._listen(buddy, 'disappear', this.delete)

@@ -16,7 +16,7 @@ test.eachClass('on-results', t => {
   db.create(alice)
   db.create(alice)
 
-  db.on('results', all => {
+  db.onWithReplay('results', all => {
     output('db has:', all.map(x => x.name).join(', '))
   })
 

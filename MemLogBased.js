@@ -1,7 +1,7 @@
 'use strict'
 
 /*
-  TO DO:
+  TO DO:        ** much improved in sandhawke/sigma codebase **
 
   - filtering of history
 

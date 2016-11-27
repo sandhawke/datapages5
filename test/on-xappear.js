@@ -13,8 +13,8 @@ test.eachClass('on-xappear', t => {
   db.create(alice)
   db.create(alice)
 
-  db.on('appear', page =>    { output(page.name, 'appears') })
-    .on('disappear', page => { output(page.name, 'disappears') })
+  db.onWithReplay('appear', page =>    { output(page.name, 'appears') })
+    .onWithReplay('disappear', page => { output(page.name, 'disappears') })
 
   output.was('Alice appears')
   db.create(alice)

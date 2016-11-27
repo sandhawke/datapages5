@@ -18,7 +18,7 @@ polling)
 * Supports streaming attached media blobs, eg JPEGs
 * Works with https://github.com/sandhawke/vocabspec[vocabspec] to handle
 schema validation, migration (with views), and integration
-* Supports temporal and provenance features (only show data resulting from sources users a and b before time t)
+* Supports temporal and provenance features (only show data resulting from sources a and b before time t)
 * Supports access control for use in multiuser backends
 
 
