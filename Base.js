@@ -222,11 +222,15 @@ class Base extends EventEmitter {
       let old = this._getProperty(obj, p)
       // This wont notice an array whose elements have changed, but doing
       // that would be changing obj yourself, which is strictly forbidden
+      //
+      // we should have a paranoid-debug mode that keeps a secret copy and
+      // and flags if you mess it up // or use Proxy
       if (old !== value) {
         changed = true
         this.emit('update-property', p, old, value, obj)
         this.createAll(value)
         this._setProperty(obj, p, value)
+        this.emit('update-property-after', p, old, value, obj)
       }
     }
     if (changed) {
