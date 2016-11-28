@@ -23,7 +23,7 @@
 */
 
 const ObjectsForIDs = require('./ObjectsForIDs')
-const FilterView = require('./FilterView')
+const Filter = require('./Filter')
 const debug = require('debug')('Sigma')
 
 // this lets the time be the same for all changes in the same tick,
@@ -223,11 +223,11 @@ class Sigma extends ObjectsForIDs {
   }
 
   filter (expr, options) {
-    return new SigmaFilterView(this, expr, options)
+    return new SigmaFilter(this, expr, options)
   }
 }
 
-class SigmaFilterView extends FilterView {
+class SigmaFilter extends Filter {
   constructor (parent, expr, options) {
     super(parent, expr, options)
     options = options || {}
