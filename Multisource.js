@@ -13,9 +13,10 @@ class Multisource extends Filter {
     const self = this
     this._others.push(source)
     for (let event of [
-      'appear', 'disappear', 'progress', 'results',
-      'update-before', 'update-full', 'update-after', 'update-property',
-      'change', 'error']) {
+      'appear', 'disappear', 'progress', 'results', 'update-before',
+      'update-full', 'update-after', 'update-property',
+      'update-property-after', 'change', 'error'])
+    {
       source.on(event, (...args) => {
         debug('passing through event', event)
         self.emit(event, ...args)
